@@ -123,7 +123,6 @@ routes/
 
 ## ✅ To Do
 
-- [ ] Add file/image uploads (e.g., documents, building photos)
 - [ ] Add rent payment tracking
 - [ ] Implement notifications (rent reminders)
 - [ ] API docs with Swagger/OpenAPI
