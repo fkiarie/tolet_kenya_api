@@ -10,9 +10,17 @@ class Tenant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'unit_id', 'id_number', 'emergency_contact_name',
-        'emergency_contact_phone', 'lease_start_date', 'lease_end_date',
-        'monthly_rent', 'deposit_paid', 'is_active'
+        'user_id',
+        'unit_id',
+        'id_number',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'lease_start_date',
+        'lease_end_date',
+        'monthly_rent',
+        'deposit_paid',
+        'is_active',
+        'photo'
     ];
 
     protected $casts = [
@@ -22,7 +30,10 @@ class Tenant extends Model
         'deposit_paid' => 'decimal:2',
         'is_active' => 'boolean',
     ];
-
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo ? asset('storage/' . $this->photo) : null;
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

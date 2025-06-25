@@ -32,6 +32,8 @@ class StoreTenantRequest extends FormRequest
         'monthly_rent' => 'required|numeric',
         'deposit_paid' => 'required|numeric',
         'is_active' => 'boolean',
+        'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
     ];
 }
 
