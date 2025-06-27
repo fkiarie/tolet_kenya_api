@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Storage;
 class TenantController extends Controller
 {
     /**
-     * Display a paginated listing of tenants with related user and unit/building data.
+     * Display a paginated listing of tenants with related unit/building data.
      */
     public function index()
     {
-        return response()->json(Tenant::with(['user', 'unit.building'])->paginate(10));
+        return response()->json(Tenant::with('unit.building')->paginate(10));
     }
 
     /**
@@ -37,15 +37,15 @@ class TenantController extends Controller
             $tenant->unit->update(['is_occupied' => true]);
         }
 
-        return response()->json($tenant->load(['user', 'unit.building']), 201);
+        return response()->json($tenant->load('unit.building'), 201);
     }
 
     /**
-     * Display the specified tenant with related user and unit/building data.
+     * Display the specified tenant with related unit/building data.
      */
     public function show(Tenant $tenant)
     {
-        return response()->json($tenant->load(['user', 'unit.building']));
+        return response()->json($tenant->load('unit.building'));
     }
 
     /**
@@ -68,27 +68,25 @@ class TenantController extends Controller
 
         $tenant->update($data);
 
-        return response()->json($tenant->load(['user', 'unit.building']));
+        return response()->json($tenant->load('unit.building'));
     }
 
     /**
      * Remove the specified tenant from storage.
-     * Marks the associated unit as unoccupied.
+     * Deletes the photo and marks the unit as unoccupied.
      */
     public function destroy(Tenant $tenant)
-{
-    if ($tenant->photo && Storage::disk('public')->exists($tenant->photo)) {
-        Storage::disk('public')->delete($tenant->photo);
+    {
+        if ($tenant->photo && Storage::disk('public')->exists($tenant->photo)) {
+            Storage::disk('public')->delete($tenant->photo);
+        }
+
+        $tenant->delete();
+
+        if ($tenant->unit) {
+            $tenant->unit->update(['is_occupied' => false]);
+        }
+
+        return response()->json(['message' => 'Tenant and photo deleted successfully.']);
     }
-
-    $tenant->delete();
-
-    if ($tenant->unit) {
-        $tenant->unit->update(['is_occupied' => false]);
-    }
-
-    return response()->json(['message' => 'Tenant and photo deleted successfully.']);
 }
-
-}
-

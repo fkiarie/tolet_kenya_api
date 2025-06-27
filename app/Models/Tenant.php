@@ -10,7 +10,7 @@ class Tenant extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'name',
         'unit_id',
         'id_number',
         'emergency_contact_name',
@@ -33,10 +33,6 @@ class Tenant extends Model
     public function getPhotoUrlAttribute()
     {
         return $this->photo ? asset('storage/' . $this->photo) : null;
-    }
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function unit()
