@@ -7,6 +7,12 @@ use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\Api\LandlordController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UnitListController;
+use Illuminate\Http\Request;
+
+// Handle preflight OPTIONS requests for all API routes
+Route::options('{any}', function (Request $request) {
+    return response('', 200);
+})->where('any', '.*');
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);

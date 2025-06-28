@@ -14,7 +14,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Prepend CORS to the global middleware stack (required for handling cross-origin requests)
-        $middleware->prepend(HandleCors::class);
 
         // Optional: add middleware aliases for Sanctum (if used)
         $middleware->alias([
