@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,32 +13,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-    // Sanctum: Enable cookie-based API authentication (for SPAs if needed)
-    //$middleware->statefulApi();
+        // Prepend CORS to the global middleware stack (required for handling cross-origin requests)
+        $middleware->prepend(HandleCors::class);
 
-    // Optional: Add middleware aliases for checking token abilities
-    $middleware->alias([
-        'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
-        'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
-    ]);
-    // You generally do NOT need to exclude 'api/*' from CSRF here
-        // if your API routes are correctly in routes/api.php and are not
-        // accidentally part of the 'web' middleware group.
-        // If you still get 419 after removing statefulApi(), then uncomment this.
-        /*
-        $middleware->web(append: [
-            // Add any middleware specific to web routes here
-        ])->validateCsrfTokens(except: [
-            'api/*',
+        // Optional: add middleware aliases for Sanctum (if used)
+        $middleware->alias([
+            'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+            'ability'  => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
         ]);
-        */
 
-        // If you have custom API middleware, you can define them here
-        // $middleware->api(prepend: [
-        //     // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // if using Sanctum SPA
-        // ])
-})
-
+        // Web-specific adjustments (CSRF exceptions, etc.)
+        $middleware->web(append: [])
+                   ->validateCsrfTokens(except: ['api/*']);
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+// This file is part of the Laravel framework and is used to bootstrap the application.
+// It configures the application, sets up routing, middleware, and exception handling.

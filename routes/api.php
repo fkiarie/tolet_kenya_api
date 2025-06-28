@@ -8,7 +8,6 @@ use App\Http\Controllers\Api\LandlordController;
 use App\Http\Controllers\Api\UnitController;
 use App\Http\Controllers\Api\UnitListController;
 
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -22,3 +21,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('buildings.units', UnitController::class);
     Route::get('/units', [UnitListController::class, 'index']);
 });
+
