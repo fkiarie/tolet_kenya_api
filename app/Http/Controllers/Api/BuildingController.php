@@ -10,62 +10,46 @@ use App\Http\Requests\StoreBuildingRequest;
 use App\Http\Requests\UpdateBuildingRequest;
 
 class BuildingController extends Controller
-
 {
     use AuthorizesRequests;
 
     public function index(Request $request)
     {
         $query = Building::with([
-            'landlord.user:id,name,email', // adjust columns as needed
-            'units:id,building_id,unit_number' // adjust columns as needed
-        ])->select('id', 'name', 'address', 'landlord_id'); // adjust columns as needed
-
-        if ($request->user()->role === 'landlord') {
-            $query->whereHas('landlord', fn($q) => $q->where('user_id', $request->user()->id));
-        }
+            'landlord:id,business_name',
+            'units:id,building_id,unit_number'
+        ])->select('id', 'name', 'address', 'landlord_id');
 
         return response()->json($query->paginate(10));
     }
 
     public function store(StoreBuildingRequest $request)
     {
+        $building = Building::create($request->validated());
 
-        $landlord = $request->user()->landlordProfile;
-
-        if (!$landlord) {
-            return response()->json(['error' => 'Landlord profile required'], 400);
-        }
-
-        $building = Building::create([
-            ...$request->validated(),
-            'landlord_id' => $request->user()->landlordProfile->id,
-        ]);
-
-        return response()->json($building, 201);
+        return response()->json($building->load('landlord'), 201);
     }
 
     public function show(Building $building)
     {
-            return response()->json($building->load(['landlord.user', 'units']));
+        return response()->json($building->load(['landlord', 'units']));
     }
 
     public function update(UpdateBuildingRequest $request, Building $building)
     {
         $this->authorize('update', $building);
 
-        $validated = $request->validated();
+        $building->update($request->validated());
 
-        $building->update($validated);
-
-        return response()->json($building->load('landlord.user'));
+        return response()->json($building->load('landlord'));
     }
 
     public function destroy(Building $building)
     {
         $this->authorize('delete', $building);
+
         $building->delete();
 
         return response()->json(['message' => 'Building deleted successfully.']);
-}
+    }
 }
