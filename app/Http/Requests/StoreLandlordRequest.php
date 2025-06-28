@@ -22,7 +22,6 @@ class StoreLandlordRequest extends FormRequest
 public function rules(): array
 {
     return [
-        'user_id' => 'required|exists:users,id',
         'business_name' => 'nullable|string|max:255',
         'address' => 'nullable|string|max:255',
         'id_number' => 'nullable|string|max:20',

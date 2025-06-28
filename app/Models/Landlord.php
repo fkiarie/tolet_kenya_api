@@ -10,14 +10,14 @@ class Landlord extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'business_name', 'address', 'id_number', 'tax_pin'
+        'business_name', 'address', 'id_number', 'tax_pin'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
+    /**
+     * Get the buildings associated with the landlord.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function buildings()
     {
         return $this->hasMany(Building::class);

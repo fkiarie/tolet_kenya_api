@@ -12,7 +12,7 @@ class LandlordController extends Controller
     public function index()
     {
         return response()->json(
-            Landlord::with('user:id,name,email,phone')->paginate(10)
+            Landlord::paginate(10)
         );
     }
 
@@ -20,19 +20,19 @@ class LandlordController extends Controller
     {
         $landlord = Landlord::create($request->validated());
 
-        return response()->json($landlord->load('user'), 201);
+        return response()->json($landlord, 201);
     }
 
     public function show(Landlord $landlord)
     {
-        return response()->json($landlord->load('user', 'buildings'));
+        return response()->json($landlord->load('buildings'));
     }
 
     public function update(UpdateLandlordRequest $request, Landlord $landlord)
     {
         $landlord->update($request->validated());
 
-        return response()->json($landlord->load('user'));
+        return response()->json($landlord);
     }
 
     public function destroy(Landlord $landlord)
@@ -42,3 +42,6 @@ class LandlordController extends Controller
         return response()->json(['message' => 'Landlord deleted successfully']);
     }
 }
+// This file is part of the ToLet Kenya API project.
+// It provides the API endpoints for managing landlords, including CRUD operations.
+// The controller uses the Landlord model and handles requests for listing, creating, showing, updating
